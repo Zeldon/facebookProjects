@@ -2,6 +2,7 @@
 # run this script on command line with arguments --graphtoken and --groupid
 import argparse
 import facebook
+import unicodecsv
 import csv
 from datetime import datetime
 import sys
@@ -77,36 +78,45 @@ def main():
 
     print("writing csv ...")
     print()
-    f = open('feeds'+datetime.now().strftime("%Y%m%d_%H%MHR")+'.csv','w', newline='')
-    fcsv = csv.writer(f)
-    fields = ['postid', 'postedby', 'poster_id', 'created_time', 'user_Message',
-              'article_type', 'article_Title', 'article_Description', 'article_Source', 'article_Link']
+    with open('feeds'+datetime.now().strftime("%Y%m%d_%H%MHR")+'.csv', 'wb') as f:
+        fcsv = unicodecsv.writer(f, encoding='utf-8-sig')
+        #fcsv = csv.writer(f)
+        fields = ['postid', 'postedby', 'poster_id', 'created_time', 'user_Message',
+                  'article_type', 'article_Title', 'article_Description', 'article_Source', 'article_Link']
 
-    # write csv file
-    fcsv.writerow(fields)
+        # write csv file
+        fcsv.writerow(fields)
 
-    # parse each row item and write to csv file
-    for i, row in enumerate(finallist):
-        print(i)
-        rowdata = []
-        rowdata.append(row.get("id", "")) #postid
-        try:
-            rowdata.append(row.get("from", "").get("name", "").encode(sys.stdout.encoding, errors='replace')) #postedby
-            rowdata.append(row.get("from", "").get("id", ""))  # posted_id
+        # parse each row item and write to csv file
+        for i, row in enumerate(finallist):
+            print(i)
+            rowdata = []
+            rowdata.append(row.get("id", "")) #postid
+            try:
+                #rowdata.append(row.get("from", "").get("name", "").encode(sys.stdout.encoding, errors='replace')) #postedby
+                rowdata.append(row.get("from", "").get("name", ""))  # postedby
+                rowdata.append(row.get("from", "").get("id", ""))  # posted_id
 
-        except:
-            rowdata.append("error")
-        rowdata.append(row.get("created_time", "")) #created_time
-        rowdata.append(row.get("message", "").encode(sys.stdout.encoding, errors='replace')) #user_Message
-        rowdata.append(row.get("type", "").encode(sys.stdout.encoding, errors='replace'))  # article_type
-        rowdata.append(row.get("name", "").encode(sys.stdout.encoding, errors='replace')) #article_Title
-        rowdata.append(row.get("description", "").encode(sys.stdout.encoding, errors='replace')) #article_Description
-        rowdata.append(row.get("caption", "")) #article_Source
-        rowdata.append(row.get("link", ""))  # article_Link
+            except:
+                rowdata.append("error")
+            # rowdata.append(row.get("created_time", "")) #created_time
+            # rowdata.append(row.get("message", "").encode(sys.stdout.encoding, errors='replace')) #user_Message
+            # rowdata.append(row.get("type", "").encode(sys.stdout.encoding, errors='replace'))  # article_type
+            # rowdata.append(row.get("name", "").encode(sys.stdout.encoding, errors='replace')) #article_Title
+            # rowdata.append(row.get("description", "").encode(sys.stdout.encoding, errors='replace')) #article_Description
+            # rowdata.append(row.get("caption", "")) #article_Source
+            # rowdata.append(row.get("link", ""))  # article_Link
 
-        fcsv.writerow(rowdata)
+            rowdata.append(row.get("created_time", ""))  # created_time
+            rowdata.append(row.get("message", ""))  # user_Message
+            rowdata.append(row.get("type", ""))  # article_type
+            rowdata.append(row.get("name", ""))  # article_Title
+            rowdata.append(row.get("description", ""))  # article_Description
+            rowdata.append(row.get("caption", ""))  # article_Source
+            rowdata.append(row.get("link", ""))  # article_Link
+            fcsv.writerow(rowdata)
 
-    f.close()
+    #f.close()
     print("End of Data Output Process hehehe...")
     print("Surprise! :D ")
 

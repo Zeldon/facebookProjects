@@ -1,0 +1,1 @@
+r = reddit = praw.Reddit(client_id="9s2cRzgYc_biBw", client_secret="1pVPgcmY2bpeiuBj9AZcZxpPXD4", user_agent="testscript by /u/ryuuzaki82", username='ryuuzaki82', password='lbcb00mn')
